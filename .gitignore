@@ -13,3 +13,6 @@ _deps
 **/.vscode/
 **.exe
 **.out
+out/
+build/
+.vs/
