@@ -1,0 +1,2 @@
+Pocet pismen: 72
+Pocet cislic: 7
