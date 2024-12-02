@@ -19,7 +19,7 @@ public:
     }
 };
 
-bool loadTables(const string &filename, vector<Table> &tables) {
+bool loadTables(const string &filename, vector<Table> &tables) { //loads tables from filename, filename is in format: "id empty_seats"
     ifstream file(filename);
     if (!file.is_open()) {
         cerr << "Error opening file: " << filename << endl;
@@ -36,7 +36,7 @@ bool loadTables(const string &filename, vector<Table> &tables) {
     return true;
 }
 
-int getNextReservationId(const string &reservationFile) {
+int getNextReservationId(const string &reservationFile) { //auto-increment for the reservations. 
     ifstream file(reservationFile);
     if (!file.is_open()) {
         cerr << "Error opening file: " << reservationFile << endl;
@@ -59,9 +59,9 @@ int getNextReservationId(const string &reservationFile) {
     return latestId + 1;
 }
 
-void logReservation(const string &reservationFile, int reservationId,
-                    int tableId, int seats, const string &date,
-                    const string &time, const string &name) {
+void logReservation(const string &reservationFile, int reservationId, int tableId, 
+                    int seats, const string &date, const string &time, const string &name) { //enters a new reservation into reservationFile (reservations.txt)
+                                                                                             //format of reservation: Reservation ID | Table ID | Seats Reserved | Date | Time | Name
     ofstream file(reservationFile, ios::app);
     if (!file.is_open()) {
         cerr << "Error opening file: " << reservationFile << endl;
@@ -75,7 +75,7 @@ void logReservation(const string &reservationFile, int reservationId,
 }
 
 bool isTableReserved(const string &reservationFile, int tableId,
-                     const string &date) {
+                     const string &date) { //checks if a table with tableId has a reservation in reservationFile for that date, outputs true if it finds one (thus being occupied)
     ifstream file(reservationFile);
     if (!file.is_open()) {
         cerr << "Error opening file: " << reservationFile << endl;
@@ -96,7 +96,7 @@ bool isTableReserved(const string &reservationFile, int tableId,
 }
 
 void displayTables(const vector<Table> &tables, const string &date,
-                   const string &reservationFile, int requestedSeats) {
+                   const string &reservationFile, int requestedSeats) { //goes through all tables and displays the ones that have enough empty seats using the display function
     bool availableTableFound = false;
 
     for (const auto &table : tables) {
@@ -113,7 +113,7 @@ void displayTables(const vector<Table> &tables, const string &date,
     }
 }
 
-Table *findTableById(vector<Table> &tables, int id) {
+Table *findTableById(vector<Table> &tables, int id) { // a simple function to find the vector of a table using its id
     for (auto &table : tables) {
         if (table.id == id) {
             return &table;
@@ -123,7 +123,7 @@ Table *findTableById(vector<Table> &tables, int id) {
 }
 
 bool checkReservation(const string &reservationFile, int reservationId,
-                      const string &inputName, string &reservationLine) {
+                      const string &inputName, string &reservationLine) { // outputs true if a reservation matches the input of someone trying to edit it and saves it into reservationLine
     ifstream file(reservationFile);
     if (!file.is_open()) {
         cerr << "Error opening file: " << reservationFile << endl;
@@ -149,18 +149,15 @@ bool checkReservation(const string &reservationFile, int reservationId,
                 storedWords.push_back(word);
             }
 
-            // Transform the input name to lowercase
             string lowerInputName = inputName;
             transform(lowerInputName.begin(), lowerInputName.end(), lowerInputName.begin(), ::tolower);
 
-            // Check if the input name consists of full words in the stored name
             stringstream inputStream(lowerInputName);
             vector<string> inputWords;
             while (inputStream >> word) {
                 inputWords.push_back(word);
             }
 
-            // Compare each word in the input name with the words in the stored name
             for (const string &inputWord : inputWords) {
                 bool matchFound = false;
                 for (const string &storedWord : storedWords) {
@@ -170,12 +167,9 @@ bool checkReservation(const string &reservationFile, int reservationId,
                     }
                 }
                 if (!matchFound) {
-                    // If any word from the input doesn't match, return false
                     return false;
                 }
             }
-
-            // If all words match, set the reservation line and return true
             reservationLine = line;
             file.close();
             return true;
@@ -186,8 +180,7 @@ bool checkReservation(const string &reservationFile, int reservationId,
     return false;
 }
 
-void deleteReservation(const string &reservationFile,
-                       const string &reservationLine) {
+void deleteReservation(const string &reservationFile, const string &reservationLine) { //takes reservationLine and removes it from reservationFile
     ifstream file(reservationFile);
     ofstream tempFile("temp.txt");
 
@@ -210,7 +203,7 @@ void deleteReservation(const string &reservationFile,
 }
 
 void modifyReservation(const string &reservationFile,
-                       const string &reservationLine, int reservationId) {
+                       const string &reservationLine, int reservationId) { //takes reservationLine and modifies it accordingly
     deleteReservation(reservationFile, reservationLine);
 
     string date, name, arrivalTime;
